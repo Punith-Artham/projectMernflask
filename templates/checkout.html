@@ -1,0 +1,65 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="min-h-[90vh] p-8 bg-gradient-to-br from-white via-rose-50 to-red-50">
+  <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div class="bg-white border border-rose-200 rounded-2xl p-6 shadow-sm">
+      <p class="text-red-500 font-semibold">Checkout</p>
+      <h2 class="text-3xl font-bold text-slate-900 mt-1">Secure Checkout</h2>
+      <p class="text-slate-600 mt-1">Complete your payment to place the order.</p>
+
+      {% if error %}
+      <p class="mt-4 text-red-600 font-semibold">{{ error }}</p>
+      {% endif %}
+
+      {% if success %}
+      <div class="mt-4 bg-red-50 border border-red-200 rounded-lg p-4">
+        <p class="text-red-700 font-semibold">{{ success }}</p>
+        <a href="{{ url_for('view_cart') }}" class="inline-block mt-3 text-sm font-semibold text-red-700 underline">Back to Cart</a>
+      </div>
+      {% else %}
+      <form method="post" class="mt-5 space-y-4">
+        <div>
+          <label class="block text-sm font-semibold text-slate-700 mb-1">Select Payment Method</label>
+          <select name="payment_method" class="w-full border border-rose-200 rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-red-300" required>
+            <option value="">Choose method</option>
+            <option value="UPI">UPI</option>
+            <option value="Card">Card</option>
+            <option value="COD">Cash on Delivery</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold text-slate-700 mb-1">Transaction Reference (for UPI/Card)</label>
+          <input name="transaction_ref" type="text" placeholder="e.g. TXN12345" class="w-full border border-rose-200 rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-red-300">
+        </div>
+
+        <button type="submit" class="w-full bg-red-500 text-white rounded-lg py-2.5 font-semibold hover:bg-red-600">Pay Now</button>
+      </form>
+      {% endif %}
+    </div>
+
+    <div class="bg-white border border-rose-200 rounded-2xl p-6 shadow-sm">
+      <h3 class="text-xl font-bold text-slate-900">Order Summary</h3>
+      <div class="mt-4 space-y-3 max-h-[50vh] overflow-y-auto pr-1">
+        {% for item in cart_data %}
+        {% set qty = item.quantity|default(1)|int %}
+        <div class="flex items-center gap-3 border border-rose-100 rounded-lg p-3">
+          <img src="{{ item.img }}" alt="{{ item.name }}" class="h-14 w-14 rounded-md object-cover">
+          <div class="flex-1">
+            <p class="font-semibold text-slate-800 text-sm">{{ item.name }}</p>
+            <p class="text-xs text-slate-500">Size: {{ item.selected_size }} • Qty: {{ qty }}</p>
+          </div>
+          <p class="font-semibold text-slate-900">₹ {{ '%.2f'|format((item.price|float) * qty) }}</p>
+        </div>
+        {% endfor %}
+      </div>
+
+      <div class="mt-5 border-t border-rose-200 pt-4">
+        <p class="text-sm text-slate-500">Estimated Total</p>
+        <p class="text-3xl font-black text-red-600">₹ {{ '%.2f'|format(estimated_total) }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

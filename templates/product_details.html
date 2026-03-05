@@ -1,0 +1,476 @@
+{% extends 'layout.html' %} {% block content %}
+<div class="h-[90vh] w-full">
+  <div class="flex h-full w-full justify-center items-center">
+    <!-- Product Details -->
+    <div class="w-[70%] p-6 bg-zinc-300">
+      <h2 class="text-sm font-semibold mb-4">
+        {{ gender }} > {{ product.category }} > {{ product.name }}
+      </h2>
+
+      <div class="flex gap-6">
+        <div class="bg-white h-[250px] p-4 mb-4 w-[50%]">
+          <img
+            src="{{ url_for('static', filename=img) }}"
+            id="img"
+            alt="{{ product.name }}"
+            class="object-contain h-full w-full"
+          />
+        </div>
+        <div class="flex flex-col w-[50%]">
+          <p class="text-3xl font-semibold">{{ product.brand }}</p>
+          <p class="text-md">{{ product.name }}</p>
+
+          <div class="my-2 h-[1px] bg-slate-400 w-full"></div>
+
+          <p class="text-3xl font-semibold">₹ {{ product.price }}</p>
+          <p class="font-semibold text-emerald-600 text-sm">
+            (inclusive of all taxes)
+          </p>
+
+          <div class="flex flex-col my-2">
+            <h4 class="text-xl font-semibold">Select Size</h4>
+            <select
+              name="size"
+              id="selectedSize"
+              class="mt-2 border border-zinc-500 rounded-md p-2 w-[160px] bg-white"
+            >
+              <option value="">Choose size</option>
+              <option value="XS">XS</option>
+              <option value="S">S</option>
+              <option value="M">M</option>
+              <option value="L">L</option>
+              <option value="XL">XL</option>
+            </select>
+            <p id="cartStatus" class="text-sm mt-2 font-semibold"></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex gap-4 items-center mt-6">
+        <button
+          class="bg-green-500 text-white font-semibold py-2 px-4 rounded-md"
+        >
+          Buy Now
+        </button>
+        <button
+          class="add-cart-btn bg-rose-500 text-white font-semibold py-2 px-4 rounded-md"
+          id="addToCartButton"
+        >
+          Add To Cart
+        </button>
+        <button
+          class="try-btn bg-blue-500 text-white font-semibold py-2 px-4 rounded-md"
+          id="tryButton"
+        >
+          Try It
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 1: File Upload -->
+  <div
+    id="modal"
+    class="hidden h-[100vh] w-[100vw] fixed left-0 top-0 bg-[rgba(0,0,0,0.8)] flex justify-center items-center z-[90]"
+  >
+    <div class="relative bg-white rounded-md p-4 flex w-[40vw]">
+      <div
+        class="p-2 h-[30px] w-[30px] rounded-full bg-zinc-600 text-white font-bold flex items-center justify-center absolute top-1 right-1 cursor-pointer"
+        id="closeModalButton"
+      >
+        X
+      </div>
+      <div class="upload-container">
+        <div class="upload-mid-section">
+          <input
+            accept="image/*"
+            type="file"
+            id="fileInput"
+            multiple="false"
+            hidden
+          />
+          <div
+            class="file-upload"
+            onclick="browseFiles()"
+            id="dragDropArea"
+            ondragover="event.preventDefault()"
+            ondrop="handleDrop(event)"
+          >
+            <div>Click to Browse or Drag and Drop your Image here.</div>
+          </div>
+
+          <div class="uploading-area"></div>
+
+          <button class="upload-btn" id="uploadButton">Upload File</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 2: Display Uploaded Image -->
+  <div
+    id="modal2"
+    class="hidden h-[100vh] w-[100vw] fixed left-0 top-0 bg-[rgba(0,0,0,0.8)] flex justify-center items-center z-[90]"
+  >
+    <div
+      class="relative bg-white rounded-md p-8 flex flex-col w-[500px] h-[600px] overflow-auto"
+    >
+      <h4>This is how it will look on you !</h4>
+      <span id="frameBadge" class="mt-2 text-xs font-semibold px-2 py-1 rounded-md bg-slate-100 text-slate-700 w-fit">Frame: -</span>
+
+      <div
+        class="p-2 h-[30px] w-[30px] rounded-full bg-zinc-600 text-white font-bold flex items-center justify-center absolute top-1 right-1 cursor-pointer"
+        id="closeModal2Button"
+      >
+        X
+      </div>
+
+      <img
+        id="finalImage"
+        src=""
+        alt=""
+        class="mt-4 w-full h-full object-cover"
+      />
+
+      <button
+        id="infoButton"
+        class="mt-3 bg-slate-700 text-white font-semibold py-2 px-3 rounded-md w-fit"
+      >
+        Info
+      </button>
+
+      <div id="predictionPanel" class="mt-4 hidden">
+        <h4 class="text-xl font-semibold">Size Prediction Results</h4>
+        <p><strong>Estimated Size:</strong> <span id="predSize">-</span></p>
+        <p><strong>Gender:</strong> <span id="predGender">-</span></p>
+        <h5 class="mt-2 font-semibold">Measurements:</h5>
+        <div class="bg-gray-100 p-4 rounded-lg text-sm" id="predMeasurements"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Ensure the code runs after the page has loaded
+  document.addEventListener("DOMContentLoaded", function () {
+    // Function to browse and select files
+    function browseFiles() {
+      console.log("Selecting file");
+      fileInput.click();
+    }
+
+    // Get modal elements
+    const tryButton = document.getElementById("tryButton");
+    const closeModalButton = document.getElementById("closeModalButton");
+    const closeModal2Button = document.getElementById("closeModal2Button");
+    const infoButton = document.getElementById("infoButton");
+    const predictionPanel = document.getElementById("predictionPanel");
+    const frameBadge = document.getElementById("frameBadge");
+    const addToCartButton = document.getElementById("addToCartButton");
+    const selectedSize = document.getElementById("selectedSize");
+    const cartStatus = document.getElementById("cartStatus");
+    const modal = document.getElementById("modal");
+    const modal2 = document.getElementById("modal2");
+
+    // Track modal state
+    let modalOpen = false;
+    let modalOpen2 = false;
+
+    // Event listener for opening the modal
+    tryButton.addEventListener("click", function () {
+      toggleModal(modal);
+    });
+
+    // Event listener for closing modal1
+    closeModalButton.addEventListener("click", function () {
+      toggleModal(modal);
+    });
+
+    // Event listener for closing modal2
+    closeModal2Button.addEventListener("click", function () {
+      toggleModal(modal2);
+    });
+
+    infoButton.addEventListener("click", function () {
+      predictionPanel.classList.toggle("hidden");
+    });
+
+    addToCartButton.addEventListener("click", async function () {
+      const size = selectedSize.value;
+      if (!size) {
+        cartStatus.textContent = "Please select size before adding to cart.";
+        cartStatus.className = "text-sm mt-2 font-semibold text-red-600";
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("size", size);
+
+      try {
+        const response = await fetch("/add_to_cart/{{ gender }}/{{ product.category }}/{{ index }}", {
+          method: "POST",
+          body: formData,
+        });
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.error || "Failed to add item");
+        }
+        cartStatus.textContent = `Added to cart (Size: ${data.size})`;
+        cartStatus.className = "text-sm mt-2 font-semibold text-emerald-700";
+      } catch (error) {
+        cartStatus.textContent = error.message || "Unable to add item to cart";
+        cartStatus.className = "text-sm mt-2 font-semibold text-red-600";
+      }
+    });
+
+    // Function to toggle modal visibility
+    function toggleModal(modal) {
+      if (modal.classList.contains("hidden")) {
+        modal.classList.remove("hidden");
+        modal.style.display = "flex";
+      } else {
+        modal.classList.add("hidden");
+        modal.style.display = "none";
+      }
+    }
+
+    // File upload logic
+    const dragDropArea = document.getElementById("dragDropArea");
+    const fileInput = document.getElementById("fileInput");
+    const uploadingArea = document.querySelector(".uploading-area");
+    const clothingImage = document.getElementById("img"); // Image element for clothing
+
+    // Drag and drop event listeners
+    dragDropArea.addEventListener("dragover", function (e) {
+      e.preventDefault();
+      this.classList.add("drag-over");
+    });
+
+    dragDropArea.addEventListener("dragleave", function () {
+      this.classList.remove("drag-over");
+    });
+
+    dragDropArea.addEventListener("drop", function (e) {
+      e.preventDefault();
+      this.classList.remove("drag-over");
+      handleFiles(e.dataTransfer.files[0]);
+    });
+
+    // File input change event
+    fileInput.addEventListener("change", function () {
+      console.log(this.files[0]);
+      handleFiles(this.files[0]);
+    });
+
+    function handleFiles(file) {
+      uploadingArea.innerHTML = "";
+      const status = document.querySelector("h3");
+      if (status) status.remove();
+
+      const uploadingFileDiv = document.createElement("div");
+      uploadingFileDiv.classList.add("uploading-file");
+      uploadingFileDiv.innerHTML = `<img src="{{ url_for('static', filename='assets/file-earmark-check-fill.svg') }}" alt="">
+                      <div>${file.name}</div>
+                      <div id="progress-bar"></div>`;
+
+      uploadingArea.appendChild(uploadingFileDiv);
+      simulateFileUpload(file, uploadingFileDiv);
+    }
+
+    function simulateFileUpload(file, progressDiv) {
+      let progress = 0;
+      const interval = setInterval(() => {
+        progress += Math.random() * 20; // Simulating progress
+        progress = Math.min(progress, 100);
+
+        progressDiv.querySelector("#progress-bar").style.width = `${progress}%`;
+
+        if (progress === 100) {
+          clearInterval(interval);
+          onUploadComplete(file, progressDiv);
+        }
+      }, 500);
+    }
+
+    function onUploadComplete(file, progressDiv) {
+      const uploadedFileDiv = document.createElement("div");
+      uploadedFileDiv.classList.add("uploaded-file");
+      uploadedFileDiv.innerHTML = ` <img src="{{ url_for('static', filename='assets/file-earmark-check-fill.svg') }}" alt=""> <div>${file.name}</div> `;
+
+      uploadingArea.appendChild(uploadedFileDiv);
+      progressDiv.remove();
+    }
+
+    // Attach event listener directly to uploadButton
+    const uploadButton = document.getElementById("uploadButton");
+    uploadButton.addEventListener("click", uploadFile);
+
+    async function uploadFile() {
+      console.log("Function working");
+
+      // Check if files are selected
+      if (fileInput.files.length === 0) {
+        alert("Please select an avatar image before uploading.");
+        return;
+      }
+      uploadButton.textContent = "Uploading... Please wait";
+      uploadButton.disabled = true;
+      const formData = new FormData();
+
+      // Check if clothingImage is a valid image source (Blob or File)
+      if (clothingImage.src) {
+        try {
+          // Fetch the image as a Blob
+          const response = await fetch(clothingImage.src);
+          const blob = await response.blob(); // Convert the image to a Blob
+
+          // Append the clothing image (as Blob) to the FormData
+          formData.append("clothing_image", blob, "clothing_image.jpg");
+        } catch (error) {
+          console.error("Error fetching clothing image:", error);
+          alert("Unable to read product image. Please refresh and try again.");
+          uploadButton.textContent = "Upload File";
+          uploadButton.disabled = false;
+          return;
+        }
+      }
+
+      // Append the avatar image file to FormData
+      formData.append("avatar_image", fileInput.files[0], "avatar_image.jpg");
+      console.log("Form Data appended");
+
+      // Send the form data to the backend
+      fetch("/upload", {
+        method: "POST",
+        body: formData,
+      })
+        .then(async (response) => {
+          const data = await response.json();
+          if (!response.ok) {
+            throw new Error(data.error || "Upload failed");
+          }
+          return data;
+        })
+        .then((data) => {
+          console.log("Server Response:", data);
+
+          if (data.image_url) {
+            // Hide the file input modal and show the result image modal
+            toggleModal(modal);
+            toggleModal(modal2);
+            predictionPanel.classList.add("hidden");
+            document.getElementById("predSize").textContent = "-";
+            document.getElementById("predGender").textContent = "-";
+            document.getElementById("predMeasurements").innerHTML = "";
+            frameBadge.textContent = "Frame: -";
+
+            // Set the image source to the image URL returned from the backend
+            const imagePath = data.image_url; // Example: '/uploads/output_image.png'
+            document.getElementById("finalImage").src = imagePath; // Show the image in your element
+
+            // Send the uploaded file to /predict_size
+            predictSize(fileInput.files[0]);
+          } else {
+            console.error("Error:", data.error);
+            alert(data.error || "Upload failed. Please try again.");
+          }
+        })
+        .catch((error) => {
+          console.error("Error during upload:", error);
+          alert(error.message || "Upload failed. Please try again.");
+        })
+        .finally(() => {
+          uploadButton.textContent = "Upload File";
+          uploadButton.disabled = false;
+        });
+    }
+
+    // Function to send the file to /predict_size and display the results
+    async function predictSize(file) {
+      const formData = new FormData();
+      formData.append("file", file, file.name); // Append the file directly
+
+      // Send the form data to /predict_size
+      fetch("/predict_size", {
+        method: "POST",
+        body: formData,
+      })
+        .then((response) => response.json()) // Parse response as JSON
+        .then((rawData) => {
+          console.log("Raw Size Prediction Response:", rawData);
+
+          if (rawData.error) {
+            alert(rawData.error || "Failed to predict size");
+            return;
+          }
+
+          // Extract values for better readability
+          const {
+            estimated_size,
+            gender,
+            predicted_gender,
+            gender_confidence,
+            size_confidence,
+            frame_type,
+            suggestion,
+            measurements,
+            gender_warning,
+            size_warning,
+          } = rawData;
+
+          const safeMeasurements = measurements || {};
+
+          // Format the measurements
+          const formattedMeasurements = `
+        <p><strong>Frame Type:</strong> ${frame_type || "N/A"}</p>
+        <p><strong>Arm Length:</strong> ${safeMeasurements.arm_length_cm ?? "N/A"} cm</p>
+        <p><strong>Shoulder Width:</strong> ${safeMeasurements.shoulder_width_cm ?? "N/A"} cm</p>
+        <p><strong>Hip Width:</strong> ${safeMeasurements.hip_width_cm ?? "N/A"} cm</p>
+        <p><strong>Upper Body Length:</strong> ${safeMeasurements.torso_length_cm ?? "N/A"} cm</p>
+        ${safeMeasurements.estimated_height_cm !== null && safeMeasurements.estimated_height_cm !== undefined
+          ? `<p><strong>Height:</strong> ${safeMeasurements.estimated_height_cm} cm</p>`
+          : `<p><strong>Height:</strong> Not estimated (upload full-body photo)</p>`}
+        ${suggestion ? `<p><strong>Suggestion:</strong> ${suggestion}</p>` : ""}
+        ${gender_warning ? `<p><strong>Gender Note:</strong> ${gender_warning}</p>` : ""}
+      `;
+
+          const genderLabelRaw = (gender || predicted_gender || "N/A").toString().trim().toLowerCase();
+          const genderLabel = genderLabelRaw === "male"
+            ? "Male"
+            : genderLabelRaw === "female"
+              ? "Female"
+              : genderLabelRaw === "uncertain"
+                ? "Uncertain"
+                : "N/A";
+
+          document.getElementById("predSize").textContent = `${estimated_size || "N/A"}`;
+          document.getElementById("predGender").textContent = `${genderLabel}${Number.isFinite(Number(gender_confidence)) ? ` (${Number(gender_confidence).toFixed(1)}%)` : ""}`;
+          document.getElementById("predMeasurements").innerHTML = formattedMeasurements;
+          frameBadge.textContent = `Frame: ${(frame_type || "N/A").replace("_", " ").toUpperCase()}`;
+          predictionPanel.classList.remove("hidden");
+        })
+        .catch((error) => {
+          console.error("Error during size prediction:", error);
+        });
+    }
+
+    // Function to convert data URI to Blob
+    function dataURItoBlob(dataURI) {
+      const byteString = atob(dataURI.split(",")[1]);
+      const arrayBuffer = new ArrayBuffer(byteString.length);
+      const uintArray = new Uint8Array(arrayBuffer);
+
+      for (let i = 0; i < byteString.length; i++) {
+        uintArray[i] = byteString.charCodeAt(i);
+      }
+
+      return new Blob([uintArray], { type: "image/jpeg" });
+    }
+
+    // Ensure the browseFiles function is available when the drag-and-drop area is clicked
+    dragDropArea.onclick = browseFiles;
+  });
+</script>
+
+{% endblock %}

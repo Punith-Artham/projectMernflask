@@ -1,0 +1,213 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="min-h-[90vh] bg-gradient-to-br from-white via-slate-50 to-rose-50 p-6 md:p-8">
+    <div class="max-w-7xl mx-auto">
+        <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm mb-6">
+            <p class="text-rose-500 font-semibold">Men Collection</p>
+            <h2 class="text-3xl md:text-4xl font-black text-slate-900">Dress sharp. Feel unstoppable.</h2>
+        </div>
+
+        <div class="flex w-full gap-5">
+        <div class="w-[18%] p-5 min-h-[70vh] bg-white border border-slate-200 rounded-2xl text-black shadow-sm">
+            <h3 class="text-black mb-3 font-semibold">Filters</h3>
+
+            <!-- Toggle for T-Shirts -->
+            <label class="block mb-2">
+                <input type="checkbox" id="tshirtToggle" checked>
+                T-Shirts
+            </label>
+
+            <!-- Toggle for Jackets -->
+            <label class="block mb-2">
+                <input type="checkbox" id="jacketToggle" checked>
+                Jackets
+            </label>
+
+            <!-- Toggle for Shirts -->
+            <label class="block mb-4">
+                <input type="checkbox" id="shirtToggle" checked>
+                Shirts
+            </label>
+
+            <h4 class="mb-2 mt-4 font-semibold">Price</h4>
+            <label class="block mb-2">
+                <input type="radio" name="priceFilter" value="highToLow" checked>
+                High to Low
+            </label>
+            <label class="block">
+                <input type="radio" name="priceFilter" value="lowToHigh">
+                Low to High
+            </label>
+
+        </div>
+
+        <div class="max-h-[75vh] overflow-y-auto w-[82%] pr-1">
+            <h2 class="text-2xl font-semibold mb-4">Men's Clothing Collection</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="productsContainer">
+            </div>
+        </div>
+    </div>
+    </div>
+</div>
+
+<script>
+    let data = {};
+
+    document.addEventListener('DOMContentLoaded', function () {
+        fetchData();
+        addEventListeners();
+    });
+
+    function applyCategoryFromQuery() {
+        const params = new URLSearchParams(window.location.search);
+        const category = (params.get('category') || '').toLowerCase();
+        if (!category) return;
+
+        document.getElementById('tshirtToggle').checked = category === 'tshirt' || category === 'tshirts';
+        document.getElementById('shirtToggle').checked = category === 'shirts' || category === 'shirt';
+        document.getElementById('jacketToggle').checked = category === 'jackets' || category === 'jacket';
+    }
+
+    function addEventListeners() {
+        const tshirtToggle = document.getElementById('tshirtToggle');
+        const jacketToggle = document.getElementById('jacketToggle');
+        const shirtToggle = document.getElementById('shirtToggle');
+        const priceFilters = document.getElementsByName('priceFilter');
+
+        tshirtToggle.addEventListener('change', renderProducts);
+        jacketToggle.addEventListener('change', renderProducts);
+        shirtToggle.addEventListener('change', renderProducts);
+
+        priceFilters.forEach(filter => {
+            filter.addEventListener('change', renderProducts);
+        });
+    }
+
+
+    async function fetchData() {
+        try {
+            const response = await fetch('/get_data');
+            if (response.ok) {
+                const dataset = await response.json();
+                data = typeof dataset === 'string' ? JSON.parse(dataset) : dataset;
+                console.log(data);
+                applyCategoryFromQuery();
+                renderProducts();
+            } else {
+                console.error('Failed to fetch dataset');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
+    function renderProducts() {
+        const productsContainer = document.getElementById('productsContainer');
+        productsContainer.innerHTML = '';
+
+        const selectedTshirt = document.getElementById('tshirtToggle').checked;
+        const selectedJacket = document.getElementById('jacketToggle').checked;
+        const selectedShirt = document.getElementById('shirtToggle').checked;
+        const priceFilter = document.querySelector('input[name="priceFilter"]:checked').value;
+
+        const menData = (data && data.men) || {};
+        let selectedProducts = [];
+
+        if (selectedTshirt) {
+            selectedProducts = selectedProducts.concat(menData.tshirt || []);
+        }
+
+        if (selectedJacket) {
+            selectedProducts = selectedProducts.concat(menData.jackets || []);
+        }
+
+        if (selectedShirt) {
+            selectedProducts = selectedProducts.concat(menData.shirts || []);
+        }
+
+        // Apply price filter
+
+        if(priceFilter){
+            selectedProducts = selectedProducts
+            .filter(product => product.price !== undefined)
+            .sort((a, b) => {
+                if (priceFilter === 'highToLow') {
+                    return parseFloat(b.price) - parseFloat(a.price);
+                } else {
+                    return parseFloat(a.price) - parseFloat(b.price);
+                }
+            })
+        }
+
+        if (!selectedProducts.length) {
+                        productsContainer.innerHTML = '<div class="col-span-full text-center text-slate-500 font-medium py-10 bg-white border border-slate-200 rounded-xl">No clothes found for selected filters. Try enabling more categories.</div>';
+            return;
+        }
+
+        // Render filtered products
+        selectedProducts.forEach((product, index) => {
+        const productCard = document.createElement('div');
+                productCard.className = 'border border-slate-200 rounded-2xl p-4 shadow-sm bg-white hover:shadow-md transition';
+        productCard.innerHTML = `
+                        <div class="bg-slate-100 rounded-xl p-2 mb-3 h-[280px] overflow-hidden">
+              <img src="${product.img}" alt="${product.name}" class="h-full w-full object-cover rounded-md">
+            </div>
+                        <p class="text-xs font-semibold text-rose-500">${product.brand}</p>
+                        <h3 class="text-lg font-bold text-slate-900 mt-1">${product.name}</h3>
+                        <p class="mt-2 text-xl font-bold text-slate-900">₹ ${product.price}</p>
+            <select id="size-${product.category}-${product.index}" name="size" class="mt-2 border border-zinc-400 rounded-md p-1 w-full">
+              <option value="">Select Size</option>
+              <option value="XS">XS</option>
+              <option value="S">S</option>
+              <option value="M">M</option>
+              <option value="L">L</option>
+              <option value="XL">XL</option>
+            </select>
+
+            <div class="flex gap-2 items-center mt-4 w-full text-sm">
+                <button onclick="window.location.href='/men/${product.category}/${product.index}'" class="border border-slate-300 bg-white text-slate-800 font-semibold rounded-lg py-2 w-full hover:bg-slate-100"> View </button>
+                <button onclick="window.location.href='/men/${product.category}/${product.index}'" class="try-btn border border-blue-500 bg-blue-500 text-white font-semibold rounded-lg py-2 w-full"> Try </button>
+                <button onClick="addToCart('${product.index}','${product.category}')" class="add-cart-btn add-cart-primary border rounded-lg py-2 w-full flex items-center justify-center gap-2"> 
+                    <i class="bi bi-bag-plus-fill"></i>
+                    <span>Add</span>
+                </button>
+            </div>
+        `;
+    productsContainer.appendChild(productCard);
+});
+
+    }
+
+    async function addToCart(index,category){
+
+        console.log(index,category)
+
+        const sizeElement = document.getElementById(`size-${category}-${index}`);
+        const size = sizeElement ? sizeElement.value : "";
+        if(!size){
+            alert('Please select a size first');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('size', size);
+
+        const res = await fetch(`/add_to_cart/men/${category}/${index}`,{
+            method:"POST",
+            body: formData
+        });
+        const data = await res.json();
+        console.log(data);
+
+        if(data.message){
+            alert(`Item Added to Cart! Size: ${data.size}`);
+        }
+        else{
+            alert(data.error || 'Something Went Wrong. Try again later');
+        }
+    }
+
+</script>
+{% endblock %}

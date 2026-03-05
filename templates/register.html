@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account - Clothify</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="register-v2-page">
+        <div class="register-v2-overlay"></div>
+        <div class="register-v2-wrapper">
+            <div class="register-v2-brand">
+                <p class="register-v2-tag">AI-Powered Virtual Fitting</p>
+                <h1>Join Clothify</h1>
+                <p class="register-v2-copy">Create your account to try outfits instantly, save favorites, and get smarter size recommendations.</p>
+            </div>
+
+            <form class="register-v2-card" method="post" id="registerForm" novalidate>
+                <h2>Create Account</h2>
+                <p>Already have an account? <a href="/">Login Here</a></p>
+
+                {% if error %}
+                <div class="auth-error">{{ error }}</div>
+                {% endif %}
+                <div id="clientError" class="auth-error" style="display:none;"></div>
+
+                <div class="form-component">
+                    <label for="email">Email</label>
+                    <input type="text" name="email" id="email" value="{{ email or '' }}" placeholder="you@example.com" required>
+                </div>
+                <div class="form-component">
+                    <label for="password">Password</label>
+                    <input type="password" name="password" id="password" placeholder="At least 6 characters" required>
+                </div>
+                <div class="form-component">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password" name="confirm-password" id="confirmPassword" placeholder="Re-enter password" required>
+                </div>
+
+                <button type="submit" class="register-v2-btn">Sign Up</button>
+            </form>
+        </div>
+    </div>
+</body>
+
+<script>
+    document.getElementById('registerForm').addEventListener('submit', function(e){
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+        const errorBox = document.getElementById('clientError');
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        errorBox.style.display = 'none';
+        errorBox.textContent = '';
+
+        if (!email || !password || !confirmPassword) {
+            e.preventDefault();
+            errorBox.textContent = 'All fields are required.';
+            errorBox.style.display = 'block';
+            return;
+        }
+
+        if (!emailRegex.test(email)) {
+            e.preventDefault();
+            errorBox.textContent = 'Please enter a valid email address.';
+            errorBox.style.display = 'block';
+            return;
+        }
+
+        if (password.length < 6) {
+            e.preventDefault();
+            errorBox.textContent = 'Password must be at least 6 characters.';
+            errorBox.style.display = 'block';
+            return;
+        }
+
+        if (password !== confirmPassword) {
+            e.preventDefault();
+            errorBox.textContent = 'Passwords do not match.';
+            errorBox.style.display = 'block';
+        }
+    });
+</script>
+
+</html>

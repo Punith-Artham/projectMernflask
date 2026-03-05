@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}My Flask App{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <style>
+        *{
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body>
+
+    <nav class="h-[10vh] shadow-md flex p-2 px-6 justify-between items-center fixed top-0 left-0 right-0 bg-white z-50">
+        <div class="text-xl font-semibold text-rose-500">Clothify</div>
+        <ul class="flex justify-around w-[50%]">
+            <li><a href="{{ url_for('home') }}">Home</a></li>
+
+            <li class="relative group">
+                <a href="{{ url_for('men')}}" class="group">Shop Men</a>
+                <ul class="absolute hidden bg-white py-2 rounded-md shadow-md group-hover:block z-50 flex flex-col ">
+                    <li class="hover:bg-gray-200 p-2 px-4 w-[120px]"><a href="{{ url_for('men')}}?category=tshirt">T-Shirts</a></li>
+                    <li class="hover:bg-gray-200 p-2 px-4 w-[120px]"><a href="{{ url_for('men')}}?category=shirts">Shirts</a></li>
+                    <li class="hover:bg-gray-200 p-2 px-4 w-[120px]"><a href="{{ url_for('men')}}?category=jackets">Jackets</a></li>
+                </ul>
+            </li>
+    
+            <li class="relative group">
+                <a href="{{ url_for('women') }}" class="group">Shop Women</a>
+                <ul class="absolute hidden bg-white py-2 rounded-md shadow-md group-hover:block z-50 flex flex-col ">
+                    <li class="hover:bg-gray-200 p-2 px-4 w-[120px]"><a href="{{ url_for('women') }}">Daily Wear</a></li>
+                    <li class="hover:bg-gray-200 p-2 px-4 w-[120px]"><a href="{{ url_for('women') }}">Casual Wear</a></li>
+                    <li class="hover:bg-gray-200 p-2 px-4 w-[120px]"><a href="{{ url_for('women') }}">Tops</a></li>
+                </ul>
+            </li>
+    
+            <!-- <div class="flex relative bg-zinc-200 rounded-md px-2">
+                <input type="text" class="px-2 py-1 outline-none bg-transparent" placeholder="Search for items">
+                <img class="" src="../static/assets/search.svg" alt="">
+            </div> -->
+
+            <li> <a href="{{url_for('view_cart')}}">View Cart</a> </li>
+            <li><a href="{{ url_for('logout') }}">Logout</a></li>
+        </ul>
+    </nav>
+    
+
+    <div class="content pt-[10vh]">
+        {% block content %}{% endblock %}
+    </div>
+
+    
+</body>
+</html>

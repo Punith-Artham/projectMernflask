@@ -1,0 +1,226 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="min-h-[90vh] bg-gradient-to-b from-white via-rose-50 to-red-50 overflow-hidden relative">
+    <div class="pointer-events-none absolute -top-24 -left-20 h-72 w-72 rounded-full bg-red-200/70 blur-3xl animate-float-soft"></div>
+    <div class="pointer-events-none absolute top-36 -right-16 h-80 w-80 rounded-full bg-rose-200/70 blur-3xl animate-float"></div>
+
+    <section class="max-w-7xl mx-auto px-6 md:px-8 pt-16 pb-10 relative z-10">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+            <div class="animate-fade-up">
+                <p class="text-xs tracking-[0.35em] uppercase text-red-400 font-semibold">Premium Try-On Studio</p>
+                <h1 class="text-5xl md:text-6xl font-black leading-[1.05] mt-4 text-slate-900">
+                    Fashion That Fits,
+                    <span class="bg-gradient-to-r from-red-500 to-rose-400 text-transparent bg-clip-text">Perfectly.</span>
+                </h1>
+                <p class="text-slate-600 mt-5 text-lg max-w-xl">
+                    Experience a modern shopping flow with smart fit estimation, stylish collections, and clean checkout in one place.
+                </p>
+
+                <div class="mt-8 flex flex-wrap gap-3">
+                    <a href="{{ url_for('men') }}" class="px-6 py-3 rounded-xl bg-red-500 text-white font-semibold hover:bg-red-600 transition">Explore Men</a>
+                    <a href="{{ url_for('women') }}" class="px-6 py-3 rounded-xl border border-red-300 text-red-600 font-semibold hover:bg-red-50 transition">Explore Women</a>
+                </div>
+
+                <div class="grid grid-cols-3 gap-3 mt-8 max-w-md">
+                    <div class="premium-card p-3 rounded-xl">
+                        <p class="text-2xl font-bold text-red-600">98%</p>
+                        <p class="text-xs text-slate-500">Fit Confidence</p>
+                    </div>
+                    <div class="premium-card p-3 rounded-xl">
+                        <p class="text-2xl font-bold text-red-600">1K+</p>
+                        <p class="text-xs text-slate-500">Daily Tries</p>
+                    </div>
+                    <div class="premium-card p-3 rounded-xl">
+                        <p class="text-2xl font-bold text-red-600">24/7</p>
+                        <p class="text-xs text-slate-500">Style Access</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="animate-fade-up-delayed">
+                <div class="premium-card rounded-2xl p-4 border border-red-100 shadow-xl">
+                    <div class="relative h-[440px] rounded-xl overflow-hidden bg-white">
+                        <img id="heroSlideImage" src="{{ url_for('static', filename='assets/mens/tshirts/tshirt-1.jpg') }}" alt="Premium Slide" class="w-full h-full object-contain transition-all duration-700 p-2">
+                        <div class="absolute inset-x-0 bottom-0 p-5 bg-gradient-to-t from-red-900/70 to-transparent">
+                            <p id="heroSlideTag" class="text-xs text-rose-100 tracking-widest uppercase">Now Trending</p>
+                            <h3 id="heroSlideTitle" class="text-2xl font-extrabold text-white">Urban Essentials</h3>
+                            <p id="heroSlideSub" class="text-sm text-rose-100 mt-1">Tailored pieces built for everyday confidence.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between mt-3">
+                        <button id="heroPrev" class="px-3 py-1.5 text-sm rounded-md border border-red-200 text-red-600 hover:bg-red-50 transition">Prev</button>
+                        <div id="heroDots" class="flex gap-2"></div>
+                        <button id="heroNext" class="px-3 py-1.5 text-sm rounded-md border border-red-200 text-red-600 hover:bg-red-50 transition">Next</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="max-w-7xl mx-auto px-6 md:px-8 pb-14 relative z-10">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="premium-card rounded-2xl p-5 group hover:-translate-y-1 transition">
+                <p class="text-red-500 text-sm font-semibold">Step 01</p>
+                <h4 class="text-xl font-bold mt-1 text-slate-900">Upload</h4>
+                <p class="text-slate-600 text-sm mt-2">Add a clear front-facing image for best detection and precision mapping.</p>
+            </div>
+            <div class="premium-card rounded-2xl p-5 group hover:-translate-y-1 transition">
+                <p class="text-red-500 text-sm font-semibold">Step 02</p>
+                <h4 class="text-xl font-bold mt-1 text-slate-900">Analyze</h4>
+                <p class="text-slate-600 text-sm mt-2">Smart body and face cues optimize fit recommendations with confidence scoring.</p>
+            </div>
+            <div class="premium-card rounded-2xl p-5 group hover:-translate-y-1 transition">
+                <p class="text-red-500 text-sm font-semibold">Step 03</p>
+                <h4 class="text-xl font-bold mt-1 text-slate-900">Checkout</h4>
+                <p class="text-slate-600 text-sm mt-2">Build cart, adjust quantity, and finish with one smooth checkout flow.</p>
+            </div>
+        </div>
+
+        <div class="mt-8 premium-card rounded-2xl p-6 text-center">
+            <p class="text-sm text-red-500 font-semibold">Live Tip</p>
+            <p id="homeTip" class="text-xl font-semibold mt-2 text-slate-900">Use clear lighting for sharper try-on output and cleaner fit detection.</p>
+        </div>
+    </section>
+</div>
+
+<style>
+    .premium-card {
+        background: #ffffff;
+        border: 1px solid rgba(244, 63, 94, 0.18);
+        box-shadow: 0 12px 30px rgba(239, 68, 68, 0.08);
+    }
+
+    .animate-fade-up {
+        animation: fadeUp 0.8s ease forwards;
+    }
+
+    .animate-fade-up-delayed {
+        animation: fadeUp 1s ease forwards;
+    }
+
+    .animate-float {
+        animation: floatY 7s ease-in-out infinite;
+    }
+
+    .animate-float-soft {
+        animation: floatY 10s ease-in-out infinite;
+    }
+
+    @keyframes fadeUp {
+        from {
+            opacity: 0;
+            transform: translateY(16px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes floatY {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-16px); }
+    }
+</style>
+
+<script>
+    const tips = [
+        "Use clear lighting for sharper try-on output and cleaner fit detection.",
+        "Keep shoulders visible in frame for better size prediction.",
+        "Select size before adding to cart for the fastest checkout flow.",
+        "Front-facing images improve both gender and fit confidence."
+    ];
+
+    const slides = [
+        {
+            image: "{{ url_for('static', filename='assets/mens/tshirts/tshirt-1.jpg') }}",
+            tag: "Now Trending",
+            title: "Urban Essentials",
+            sub: "Tailored pieces built for everyday confidence."
+        },
+        {
+            image: "{{ url_for('static', filename='assets/mens/jackets/jacket1.png') }}",
+            tag: "Premium Pick",
+            title: "Layered Precision",
+            sub: "Sharp silhouettes with modern textures."
+        },
+        {
+            image: "{{ url_for('static', filename='assets/women/tops/06429_00.jpg') }}",
+            tag: "New Arrival",
+            title: "Minimal Chic",
+            sub: "Elegant daily looks with premium comfort."
+        },
+        {
+            image: "{{ url_for('static', filename='assets/women/jackets/01260_00.jpg') }}",
+            tag: "Signature Style",
+            title: "Refined Statement",
+            sub: "Sophisticated looks designed to stand out."
+        }
+    ];
+
+    let tipIndex = 0;
+    let slideIndex = 0;
+
+    const tipEl = document.getElementById('homeTip');
+    const imgEl = document.getElementById('heroSlideImage');
+    const tagEl = document.getElementById('heroSlideTag');
+    const titleEl = document.getElementById('heroSlideTitle');
+    const subEl = document.getElementById('heroSlideSub');
+    const dotsEl = document.getElementById('heroDots');
+
+    function rotateTip() {
+        if (!tipEl) return;
+        tipIndex = (tipIndex + 1) % tips.length;
+        tipEl.style.opacity = 0;
+        setTimeout(() => {
+            tipEl.textContent = tips[tipIndex];
+            tipEl.style.opacity = 1;
+        }, 200);
+    }
+
+    function renderDots() {
+        if (!dotsEl) return;
+        dotsEl.innerHTML = slides.map((_, i) => `
+            <button data-index="${i}" class="h-2.5 w-2.5 rounded-full ${i === slideIndex ? 'bg-red-500' : 'bg-rose-200'}"></button>
+        `).join('');
+
+        dotsEl.querySelectorAll('button').forEach((button) => {
+            button.addEventListener('click', () => {
+                slideIndex = Number(button.dataset.index || 0);
+                renderSlide();
+            });
+        });
+    }
+
+    function renderSlide() {
+        if (!imgEl || !tagEl || !titleEl || !subEl) return;
+        const slide = slides[slideIndex];
+        imgEl.style.opacity = 0.55;
+        imgEl.style.transform = 'scale(1.03)';
+
+        setTimeout(() => {
+            imgEl.src = slide.image;
+            tagEl.textContent = slide.tag;
+            titleEl.textContent = slide.title;
+            subEl.textContent = slide.sub;
+            imgEl.style.opacity = 1;
+            imgEl.style.transform = 'scale(1)';
+            renderDots();
+        }, 220);
+    }
+
+    function moveSlide(step) {
+        slideIndex = (slideIndex + step + slides.length) % slides.length;
+        renderSlide();
+    }
+
+    document.getElementById('heroPrev')?.addEventListener('click', () => moveSlide(-1));
+    document.getElementById('heroNext')?.addEventListener('click', () => moveSlide(1));
+
+    setInterval(rotateTip, 3200);
+    setInterval(() => moveSlide(1), 4200);
+    renderSlide();
+</script>
+
+{% endblock %}

@@ -1,0 +1,487 @@
+@import url('https://fonts.googleapis.com/css2?family=Cabin+Sketch:wght@400;700&family=Inter:wght@200;300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&family=Onest:wght@400;500;600;700;800&family=Poppins:wght@200;300;400;500;600;700&display=swap');
+
+*{
+    margin: 0;
+    padding:0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* login pages */
+.register-page{
+    height: 100vh;
+    width: 100%;
+
+    background: linear-gradient(rgba(251,113,133,0.4), rgba(193, 124, 135, 0.4)), url('../assets/login-img.jpg');
+
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+}
+
+.register-container{
+    width: 30%;
+    position: absolute;
+    left: 10%;
+    top: 50%;
+    transform: translateY(-50%);
+
+    background-color: white;
+    border-radius: 24px;
+    padding: 2.5rem 4rem;
+}
+.register-container h2{
+    text-align: center;
+    font-weight: 500;
+}
+.register-container p{
+    text-align: center;
+    margin-bottom: 2rem;
+    margin-top: 0.5rem;
+    font-size: small;
+}
+
+.saperator-box{
+   display: flex;
+   justify-content: space-around;
+   align-items: center;
+   gap: 0.75rem;
+   margin: 1rem 0;
+}
+.saperator-box div{
+    width: 100%;
+    height: 2px; 
+    background: rgba(102, 102, 102, 0.25)
+}
+.saperator-box span{
+    color: #666666; 
+    font-size: 24px; 
+    font-family: 'Montserrat', sans-serif; 
+    font-weight: 400; 
+    word-wrap: break-word
+}
+
+.form-component{
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+.form-component label{
+    color: grey;
+}
+.form-component input{
+    padding: 0.75rem 1.5rem;
+    border: 1px solid grey;
+    border-radius: 12px;
+    outline: none;
+}
+
+.register-container button{
+    width: 100%;
+    background-color: #055113;
+    color: white;
+    border-radius: 12px;
+    padding: 0.75rem 0;
+
+    border: none;
+    outline: none;
+    margin-top: 2rem;
+    cursor: pointer;
+}
+
+
+
+.right-content{
+    color: white;
+    width: 50%;
+    position: absolute;
+    right: 0%;
+    top: 50%;
+    transform: translateY(-50%);
+    animation: fadeInUp 1s ease-in-out forwards;
+}
+.right-content h1{
+    font-size: 100px;
+}
+.right-content h3{
+    font-size: 40px;
+}
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(0);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(-50%);
+    }
+}
+
+/* upload pages */
+.upload-container{
+    border-radius: 40px;
+}
+
+.upload-heading{
+    
+    text-align: center;
+}
+
+.upload-mid-section{
+
+    padding: 1.5rem;
+
+}
+
+.file-upload{
+    padding: 4rem;
+    border: 2px dashed rgb(189, 189, 189);
+    border-radius: 8px;
+    text-align: center;
+    cursor: pointer;
+    width: 100%;
+}
+
+
+.upload-btn{
+
+    background-color: transparent;
+    border: 1px solid white;
+    color: white;
+    background-color: #6587b4;
+    padding: 0.75rem 1.25rem;
+    border-radius: 8px;
+    margin-top: 0.5rem;
+    width: 100%;
+    
+    font-size: large;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.1s ease-in-out;
+}
+.upload-btn:hover{
+    
+    background-color: #4a6589;
+}
+
+.uploading-file,.uploaded-file{
+    background-color: #b1cef3;
+    border-radius: 8px;
+    padding: 0.5rem 1.25rem;
+
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    position: relative;
+}
+.uploaded-file{
+    background-color: #5f7797;
+    color: white;
+}
+#progress-bar{
+    height: 3px;
+    width: 0%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    background-color: #2d3e54;
+    border-radius: 40px;
+}
+
+.upload-container-outer h3{
+    margin-top: 2rem;
+    text-align: center;
+}
+
+.uploading-area{
+    height: 3rem;
+}
+
+
+
+.submit-btn{
+    border: none;
+    color: white;
+    background-color: #6587b4;
+    padding: 0.75rem 2rem;
+    border-radius: 30px;
+    margin-top: 0.5rem;
+    width: fit-content;
+    font-size: large;
+    font-weight: 600;
+    cursor: pointer;
+    outline: none!important;
+}
+.submit-btn:hover{
+    
+    background-color: #4a6589;
+}
+
+/* Clotify login redesign */
+.clotify-login-page{
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4rem;
+    padding: 2rem;
+    background: linear-gradient(135deg, #fce7f3 0%, #e0f2fe 45%, #f8fafc 100%);
+}
+
+.clotify-brand{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #0f172a;
+    text-align: center;
+}
+
+.clotify-logo{
+    height: 90px;
+    width: 90px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 42px;
+    font-weight: 700;
+    color: white;
+    background: linear-gradient(135deg, #fb7185, #ec4899);
+    box-shadow: 0 10px 25px rgba(236, 72, 153, 0.35);
+    margin-bottom: 1rem;
+}
+
+.clotify-brand h1{
+    font-size: 52px;
+    font-weight: 700;
+    color: #be123c;
+}
+
+.clotify-brand p{
+    margin-top: 0.5rem;
+    font-size: 16px;
+    color: #475569;
+}
+
+.clotify-login-card{
+    width: min(420px, 95%);
+    background: rgba(255,255,255,0.92);
+    border: 1px solid #f1f5f9;
+    border-radius: 22px;
+    padding: 2rem;
+    box-shadow: 0 20px 40px rgba(15,23,42,0.08);
+}
+
+.clotify-login-card h2{
+    text-align: center;
+    font-weight: 600;
+    color: #0f172a;
+}
+
+.clotify-login-card > p{
+    text-align: center;
+    margin-top: 0.35rem;
+    margin-bottom: 1.25rem;
+    color: #64748b;
+    font-size: 14px;
+}
+
+.auth-error{
+    color: #dc2626;
+    background: #fee2e2;
+    border: 1px solid #fecaca;
+    border-radius: 10px;
+    padding: 0.6rem 0.8rem;
+    margin-bottom: 0.8rem;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.clotify-login-btn{
+    width: 100%;
+    border: none;
+    outline: none;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #fb7185, #ec4899);
+    color: white;
+    padding: 0.8rem 0;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 1.2rem;
+}
+
+.clotify-register-link{
+    text-align: center;
+    margin-top: 1rem;
+    font-size: 14px;
+    color: #475569;
+}
+
+.clotify-register-link a{
+    color: #be123c;
+    font-weight: 600;
+}
+
+@media (max-width: 900px){
+    .clotify-login-page{
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+    .clotify-brand h1{
+        font-size: 40px;
+    }
+}
+
+.try-btn{
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.try-btn:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px rgba(37, 99, 235, 0.25);
+}
+
+.add-cart-btn, .add-cart-anim{
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.add-cart-btn:hover, .add-cart-anim:hover{
+    transform: scale(1.03);
+    box-shadow: 0 10px 20px rgba(244, 63, 94, 0.22);
+}
+
+.add-cart-btn:active, .add-cart-anim:active{
+    animation: cartPop 0.22s ease;
+}
+
+.add-cart-primary{
+    border-color: transparent;
+    color: #fff;
+    background: linear-gradient(135deg, #f43f5e, #fb7185);
+    font-weight: 600;
+}
+
+.add-cart-primary:hover{
+    background: linear-gradient(135deg, #e11d48, #f43f5e);
+    color: #fff;
+}
+
+.register-v2-page{
+    min-height: 100vh;
+    position: relative;
+    background: url('../assets/login-img.jpg') center/cover no-repeat;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.register-v2-overlay{
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(120deg, rgba(15, 23, 42, 0.72), rgba(190, 24, 93, 0.48));
+}
+
+.register-v2-wrapper{
+    position: relative;
+    z-index: 1;
+    width: min(1000px, 100%);
+    display: grid;
+    grid-template-columns: 1fr 420px;
+    gap: 2rem;
+    align-items: center;
+}
+
+.register-v2-brand{
+    color: white;
+    padding: 2rem;
+}
+
+.register-v2-tag{
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #fbcfe8;
+}
+
+.register-v2-brand h1{
+    font-size: 56px;
+    line-height: 1;
+    margin-top: 0.6rem;
+}
+
+.register-v2-copy{
+    margin-top: 1rem;
+    font-size: 18px;
+    color: #f8fafc;
+    max-width: 520px;
+}
+
+.register-v2-card{
+    background: rgba(255, 255, 255, 0.93);
+    border: 1px solid #f1f5f9;
+    border-radius: 24px;
+    padding: 2rem;
+    box-shadow: 0 22px 44px rgba(15, 23, 42, 0.2);
+}
+
+.register-v2-card h2{
+    text-align: center;
+    color: #0f172a;
+    font-weight: 700;
+}
+
+.register-v2-card > p{
+    text-align: center;
+    color: #475569;
+    margin: 0.45rem 0 1rem;
+    font-size: 14px;
+}
+
+.register-v2-card > p a{
+    color: #be123c;
+    font-weight: 600;
+}
+
+.register-v2-btn{
+    width: 100%;
+    border: none;
+    outline: none;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #fb7185, #ec4899);
+    color: white;
+    padding: 0.85rem 0;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 1.2rem;
+}
+
+@media (max-width: 960px){
+    .register-v2-wrapper{
+        grid-template-columns: 1fr;
+    }
+
+    .register-v2-brand{
+        padding: 0;
+        text-align: center;
+    }
+
+    .register-v2-brand h1{
+        font-size: 42px;
+    }
+
+    .register-v2-copy{
+        margin: 0.9rem auto 0;
+    }
+}
+
+@keyframes cartPop {
+    0% { transform: scale(1); }
+    50% { transform: scale(0.95); }
+    100% { transform: scale(1.03); }
+}

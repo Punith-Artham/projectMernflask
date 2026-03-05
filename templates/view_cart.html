@@ -1,0 +1,82 @@
+<!-- view_cart.html -->
+
+{% extends 'layout.html' %}
+
+{% block content %}
+  <div class="min-h-[90vh] p-8 bg-slate-50">
+    <div class="max-w-6xl mx-auto">
+      <h2 class="text-3xl font-semibold mb-4 flex items-center gap-2"><i class="bi bi-bag"></i> Shopping Cart</h2>
+
+      {% if not cart_data %}
+        <p class="text-slate-600">Your cart is empty.</p>
+      {% else %}
+      {% set ns = namespace(total=0) %}
+      <div class="grid grid-cols-1 gap-4 max-h-[65vh] overflow-y-auto pr-2">
+        {% for item in cart_data %}
+        {% set qty = item.quantity|default(1)|int %}
+        {% set line_total = (item.price|float) * qty %}
+        {% set ns.total = ns.total + line_total %}
+        <div class="flex gap-5 bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
+          <div class="bg-slate-100 h-[180px] w-[180px] p-3 rounded-lg">
+            <img src="{{ item.img }}" alt="{{ item.name }}" class="object-cover h-full w-full rounded-md">
+          </div>
+          <div class="flex-1">
+            <p class="text-2xl font-semibold">{{ item.brand }}</p>
+            <p class="text-md">{{ item.name }}</p>
+            <p class="text-sm text-slate-500 mt-1">Size: {{ item.selected_size }}</p>
+            <div class="flex items-center gap-2 mt-2">
+              <button type="button" data-index="{{ loop.index0 }}" data-action="dec" class="qty-btn h-8 w-8 rounded-md border border-slate-300 font-bold text-slate-700">_</button>
+              <span class="min-w-[28px] text-center font-semibold">{{ qty }}</span>
+              <button type="button" data-index="{{ loop.index0 }}" data-action="inc" class="qty-btn h-8 w-8 rounded-md border border-slate-300 font-bold text-slate-700">+</button>
+            </div>
+            <div class="my-2 h-[1px] bg-slate-200 w-full"></div>
+            <p class="text-sm text-slate-500">Unit: ₹ {{ item.price }}</p>
+            <p class="text-2xl font-semibold">Subtotal: ₹ {{ '%.2f'|format(line_total) }}</p>
+            <p class="font-semibold text-emerald-600 text-sm">(inclusive of all taxes)</p>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+      <div class="mt-6 bg-white border border-slate-200 rounded-xl p-4 shadow-sm max-w-md">
+        <p class="text-slate-500 text-sm">Estimated Total</p>
+        <p class="text-3xl font-bold text-slate-900">₹ {{ '%.2f'|format(ns.total) }}</p>
+        <p class="text-xs text-slate-500 mt-1">Inclusive of taxes. Final amount may vary slightly at checkout.</p>
+        <a href="{{ url_for('checkout_page') }}" class="mt-4 inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-slate-900 text-white font-semibold hover:bg-slate-700">
+          <i class="bi bi-credit-card"></i>
+          <span>Checkout</span>
+        </a>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <script>
+    document.querySelectorAll('.qty-btn').forEach((button) => {
+      button.addEventListener('click', () => {
+        const itemIndex = Number(button.getAttribute('data-index'));
+        const action = button.getAttribute('data-action');
+        if (Number.isInteger(itemIndex) && action) {
+          changeQty(itemIndex, action);
+        }
+      });
+    });
+
+    async function changeQty(itemIndex, action) {
+      try {
+        const response = await fetch('/cart/quantity', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ item_index: itemIndex, action })
+        });
+        const result = await response.json();
+        if (!response.ok) {
+          throw new Error(result.error || 'Failed to update cart');
+        }
+        window.location.reload();
+      } catch (error) {
+        alert(error.message || 'Unable to update quantity');
+      }
+    }
+  </script>
+{% endblock %}
